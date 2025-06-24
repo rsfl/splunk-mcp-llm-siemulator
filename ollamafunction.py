@@ -30,7 +30,7 @@ class Pipe:
         ollama_host: str = Field("host.docker.internal")
         ollama_port: str = Field("11434")
         ollama_path: str = Field("/api/generate")
-        ai_model: str = Field("llama3.2:1b")
+        ai_model: str = Field("llama3.2")
         ai_timeout: int = Field(20)
         ai_enabled: bool = Field(True)
         skip_connection_test: bool = Field(False)
@@ -74,7 +74,7 @@ class Pipe:
             return ""
         ollama_url = self._pick_ollama_url()
         if not ollama_url:
-            return "\n🛑 AI: cannot reach Ollama"
+            return "\n[ERROR] AI: cannot reach Ollama"
 
         prompt = (
             "Analyze these Splunk logs:\n\n"
@@ -99,17 +99,17 @@ class Pipe:
             if r.ok:
                 text = (r.json().get("response") or "").strip()
                 if text and not text.lower().startswith("error"):
-                    return f"\n🤖 AI ANALYSIS:\n{text}"
-            return "\n🛑 AI: no usable model reply"
+                    return f"\n[AI ANALYSIS]:\n{text}"
+            return "\n[ERROR] AI: no usable model reply"
         except requests.exceptions.RequestException as e:
-            return f"\n🛑 AI: {e}"
+            return f"\n[ERROR] AI: {e}"
 
     def ask_model(self, question: str) -> str:
         if not self.valves.ai_enabled:
             return "AI is disabled."
         ollama_url = self._pick_ollama_url()
         if not ollama_url:
-            return "🛑 AI: cannot reach Ollama"
+            return "[ERROR] AI: cannot reach Ollama"
 
         payload = {
             "model": self.valves.ai_model,
@@ -121,10 +121,10 @@ class Pipe:
             r = requests.post(ollama_url, json=payload, timeout=self.valves.ai_timeout)
             if r.ok:
                 ans = (r.json().get("response") or "").strip()
-                return f"🤖 {ans}" if ans else "🛑 AI: empty response"
-            return f"🛑 AI: HTTP {r.status_code}"
+                return f"[AI] {ans}" if ans else "[ERROR] AI: empty response"
+            return f"[ERROR] AI: HTTP {r.status_code}"
         except requests.exceptions.RequestException as e:
-            return f"🛑 AI: {e}"
+            return f"[ERROR] AI: {e}"
 
     # ────────────────────────────────────────────────────────────────────────
     # Splunk helpers
