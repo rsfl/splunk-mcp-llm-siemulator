@@ -13,6 +13,7 @@
 
 ![splunkmcpllmsiemulator](https://github.com/user-attachments/assets/c3c04d04-9866-4c37-aba7-8cafbbefe7bb)
 
+![ollamaprompts1](https://github.com/user-attachments/assets/2c126110-b54e-49ac-be65-75138fbe70a5)
 
 # MITRE ATLAS focused detection development lab
 
@@ -60,6 +61,10 @@ Once running, access:
    docker cp simple-test.yaml security-range-promptfoo:/tmp/simple-test.yaml
    docker exec security-range-promptfoo promptfoo eval -c /tmp/simple-test.yaml
    ```
+
+![promptfootest](https://github.com/user-attachments/assets/a603ae9b-a53c-41e6-bfe8-bb701a6e4bc0)
+
+![promptfoo11](https://github.com/user-attachments/assets/1bd39123-9c52-4bb1-903a-fd905d766811)
 
 ## 🔍 Validation Queries
 
