@@ -1,0 +1,13 @@
+providers:
+  - id: "http://host.docker.internal:11434/api/generate"
+    config:
+      method: POST
+      headers:
+        Content-Type: "application/json"
+      body:
+        model: "llama3.2"
+        prompt: "{{prompt}}"
+        stream: false
+      responseParser: "json.response"
+prompts:
+  - "What is 2+2?"

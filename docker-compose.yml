@@ -1,0 +1,104 @@
+services:
+  # -------------------- Splunk --------------------
+  splunk:
+    image: splunk/splunk:9.1.3               # ← pinned to last good build
+    container_name: security-range-splunk
+    hostname: security-range-splunk
+    environment:
+      SPLUNK_START_ARGS: --accept-license
+      SPLUNK_PASSWORD: Password1             # change after first login
+      SPLUNK_HEC_TOKEN: ${SPLUNK_HEC_TOKEN}  # pre-creates token
+      SPLUNK_HEC_ENABLE: "true"
+    ports:
+      - "8000:8000"
+      - "8088:8088"
+      - "514:514/udp"                        # syslog UDP port
+    volumes:
+      - splunk_var:/opt/splunk/var
+      - splunk_etc:/opt/splunk/etc
+
+  # -------------------- Ollama --------------------
+  ollama:
+    image: ollama/ollama:0.3.12
+    container_name: security-range-ollama
+    hostname: ollama-server
+    environment:
+      OLLAMA_DEBUG: "1"
+      OLLAMA_VERBOSE: "1"
+      OLLAMA_ORIGINS: "*"
+      RUST_LOG: "debug,ollama=trace"
+      RUST_BACKTRACE: "full"
+      OLLAMA_LOGS: "1"
+      GIN_MODE: debug
+      OLLAMA_LOG_LEVEL: DEBUG
+      OLLAMA_LOG_PROMPT: "1"
+      OLLAMA_LOG_REQUESTS: "1"
+      OLLAMA_LOG_RESPONSES: "1"
+      OLLAMA_ENABLE_LOGGING: "1"
+    ports: ["11434:11434"]
+    volumes:
+      - ollama_models:/root/.ollama
+      - ./logs:/var/log/ollama
+    command: ["/bin/bash", "-c", "mkdir -p /var/log/ollama && exec ollama serve --verbose > /var/log/ollama/ollama.log 2>&1"]
+
+  # -------------------- MCP  ------------------
+  ollama-mcp:
+    image: node:20-slim
+    container_name: security-range-ollama-mcp
+    depends_on: [ollama]
+    environment:
+      PORT: 3456
+      OLLAMA_API: http://security-range-ollama:11434
+      LOG_LEVEL: DEBUG
+      DEBUG: "*"
+      NODE_ENV: development
+      VERBOSE: "1"
+      NODE_DEBUG: "*"
+      NPM_CONFIG_LOGLEVEL: verbose
+    command: ["/bin/bash", "-c", "mkdir -p /var/log && exec npx -y @rawveg/ollama-mcp > /var/log/mcp.log 2>&1"]
+    volumes:
+      - ./logs:/var/log
+    ports: ["3456:3456"]
+    logging:
+      driver: splunk
+      options:
+        splunk-url:  "http://host.docker.internal:8088"
+        splunk-token: "${SPLUNK_HEC_TOKEN}"
+        splunk-format: raw
+        splunk-index: mcp_logs
+        splunk-insecureskipverify: "true"
+        splunk-verify-connection: "false"
+        tag: "{{.Name}}"
+
+  # -------------------- Promptfoo -----------------
+  promptfoo:
+    image: ghcr.io/promptfoo/promptfoo:latest
+    container_name: security-range-promptfoo
+    ports: ["3000:3000"]
+    volumes:
+      - promptfoo_data:/home/promptfoo/.promptfoo
+    depends_on: [ollama]
+
+  # -------------------- OpenWebUI -----------------
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: security-range-openwebui
+    environment:
+      OLLAMA_BASE_URL: http://security-range-ollama:11434
+      WEBUI_SECRET_KEY: your-secret-key   # ollama usually does NOT require authentication when running it locally
+      LOG_LEVEL: DEBUG
+      ENABLE_SIGNUP: false
+      WEBUI_AUTH: false
+    ports: ["3001:8080"]
+    volumes:
+      - openwebui_data:/app/backend/data
+    depends_on: [ollama]
+    restart: unless-stopped
+
+# ---------- Named volumes ----------
+volumes:
+  ollama_models:
+  splunk_var:
+  splunk_etc:
+  promptfoo_data:
+  openwebui_data:

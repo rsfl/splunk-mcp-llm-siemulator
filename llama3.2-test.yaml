@@ -1,0 +1,40 @@
+providers:
+  - id: "http://host.docker.internal:11434/api/generate"
+    config:
+      method: POST
+      headers:
+        Content-Type: "application/json"
+      body:
+        model: "llama3.2"
+        prompt: "{{prompt}}"
+        stream: false
+      responseParser: "json.response"
+prompts:
+  - "Hello"
+  - "What is 2+2?"
+  - "Explain cybersecurity in one sentence"
+  - "What is the capital of France?"
+  - "Write a haiku about AI"
+tests:
+  - vars:
+      prompt: "What is 2+2?"
+    assert:
+      - type: contains
+        value: "4"
+  - vars:
+      prompt: "What is the capital of France?"
+    assert:
+      - type: contains
+        value: "Paris"
+  - vars:
+      prompt: "Explain cybersecurity in one sentence"
+    assert:
+      - type: contains
+        value: "security"
+      - type: javascript
+        value: "output.split(' ').length <= 30"
+  - vars:
+      prompt: "Write a haiku about AI"
+    assert:
+      - type: javascript
+        value: "output.split('\\n').length >= 3"
