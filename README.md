@@ -152,7 +152,7 @@ logging:
 
 ![ollamasplunkai3](https://github.com/user-attachments/assets/33b12d0c-85f2-4364-9f95-5a998885a2d6)
 
-I wrote an ollama function that will allow you to query SPLUNK via inputing SPL code, NPL (Natural language i.e what indexes are available?) AND get AI commentary, it is a little rough but it works and can help to simplify queries via NPL and get overviews. 
+I wrote an ollama function that will allow you to query SPLUNK via inputing SPL code, NPL (Natural language i.e what indexes are available?) AND get AI commentary, it is a little rough but it works and can help to simplify queries via NPL and get AI overviews of results. 
 Due to space and computing constraints (I wanted this setup to run in a 16GB or RAM laptop), I used llama3.2 (2GB). 
 
 - Go to settings --> admin settings --> find function tab --> add function and copy the contents of the python file and save, then select the function when performing query 
