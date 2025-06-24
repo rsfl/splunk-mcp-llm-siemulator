@@ -65,6 +65,32 @@ Once running, access:
 
 ![promptfoo11](https://github.com/user-attachments/assets/1bd39123-9c52-4bb1-903a-fd905d766811)
 
+- **Promptfoo** 
+## Promptfoo (upgrade to version 0.115.1)
+
+For prompt foo you will have to run the eval from command or web interface (port:3000)
+Example
+  - docker cp simple-test.yaml security-range-promptfoo:/tmp/simple-test.yaml && docker exec security-range-promptfoo promptfoo eval -c /tmp/simple-test.yaml 
+- No integration with splunk yet, you will have to perform evals or red team and export logs to csv or json 
+
+## Testing
+
+The Promptfoo configurations use HTTP providers to connect to Ollama:
+
+```yaml
+providers:
+  - id: "http://host.docker.internal:11434/api/generate"
+    config:
+      method: POST
+      headers:
+        Content-Type: "application/json"
+      body:
+        model: "llama3.2"
+        prompt: "{{prompt}}"
+        stream: false
+      responseParser: "json.response"
+```
+
 ## 🔍 Validation Queries
 
 In Splunk, use these searches to validate:
@@ -119,32 +145,6 @@ logging:
 2. Check Splunk ingestion: Use the validation queries above
 3. Set up alerting for ATLAS TTP detections
 4. Customize parsing rules in splunk-configs/props.conf
-
-- **Promptfoo** 
-## Promptfoo (upgrade to version 0.115.1)
-
-For prompt foo you will have to run the eval from command or web interface (port:3000)
-Example
-  - docker cp simple-test.yaml security-range-promptfoo:/tmp/simple-test.yaml && docker exec security-range-promptfoo promptfoo eval -c /tmp/simple-test.yaml 
-- No integration with splunk yet, you will have to perform evals or red team and export logs to csv or json 
-
-## Testing
-
-The Promptfoo configurations use HTTP providers to connect to Ollama:
-
-```yaml
-providers:
-  - id: "http://host.docker.internal:11434/api/generate"
-    config:
-      method: POST
-      headers:
-        Content-Type: "application/json"
-      body:
-        model: "llama3.2"
-        prompt: "{{prompt}}"
-        stream: false
-      responseParser: "json.response"
-```
 
 ## But wait there is more OLLAMA + SPLUNK 
 
