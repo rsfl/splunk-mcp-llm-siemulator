@@ -71,7 +71,7 @@ Once running, access:
 For prompt foo you will have to run the eval from command or web interface (port:3000)
 Example
   - docker cp simple-test.yaml security-range-promptfoo:/tmp/simple-test.yaml && docker exec security-range-promptfoo promptfoo eval -c /tmp/simple-test.yaml 
-- No integration with splunk yet, you will have to perform evals or red team and export logs to csv or json 
+- No integration with splunk yet, you will have to perform evals or red team and export logs to csv or json then ingest in Splunk via add data option.
 
 ## Testing
 
