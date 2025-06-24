@@ -9,6 +9,11 @@
 # - OpenWebui 
 # - Splunk 
 
+
+
+![splunkmcpllmsiemulator](https://github.com/user-attachments/assets/c3c04d04-9866-4c37-aba7-8cafbbefe7bb)
+
+
 # MITRE ATLAS focused detection development lab
 
 # Raw HEC Log Shipping for Windows 
@@ -139,6 +144,10 @@ providers:
 
 ## But wait there is more OLLAMA + SPLUNK 
 
+![ollamasplunkai1](https://github.com/user-attachments/assets/c1347522-7c8a-4152-a17d-1030b5e09946)
+
+![ollamasplunkai3](https://github.com/user-attachments/assets/33b12d0c-85f2-4364-9f95-5a998885a2d6)
+
 I wrote an ollama function that will allow you to query SPLUNK via inputing SPL code, NPL (Natural language i.e what indexes are available?) AND get AI commentary, it is a little rough but it works and can help to simplify queries via NPL and get overviews. 
 Due to space and computing constraints (I wanted this setup to run in a 16GB or RAM laptop), I used llama3.2 (2GB). 
 
@@ -149,7 +158,6 @@ Due to space and computing constraints (I wanted this setup to run in a 16GB or 
 - feel free to extend it or use other models
 
 - file name is ollamafunction.py
-
 
 
 ## Requirements
