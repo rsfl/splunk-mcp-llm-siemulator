@@ -42,8 +42,8 @@ quick-start.bat
 ## 🔗 Key Benefits of Raw HEC
 
 ✅ **Preserves Log Format** - Logs arrive exactly as written to disk
-✅ **Better Performance** - Less processing overhead than JSON endpoint
 ✅ **Native Parsing** - Uses Splunk's props.conf rules
+The reason of using RAW logs from Ollama is simply because they are hard to parse and ship for analysis, many other methods were tried. HEC turned out to be the most viable for this POC.
 
 ## 📊 Access Points
 
