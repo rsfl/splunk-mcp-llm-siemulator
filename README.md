@@ -143,7 +143,7 @@ logging:
 
 1. Monitor logs: `docker-compose logs -f ollama`
 2. Check Splunk ingestion: Use the validation queries above
-3. Set up alerting for ATLAS TTP detections
+3. Try to develop some detections 
 4. Customize parsing rules in splunk-configs/props.conf
 
 ## But wait there is more OLLAMA + SPLUNK 
