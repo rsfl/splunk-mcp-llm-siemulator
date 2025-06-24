@@ -9,11 +9,9 @@
 # - OpenWebui 
 # - Splunk 
 
-
-
 ![splunkmcpllmsiemulator](https://github.com/user-attachments/assets/c3c04d04-9866-4c37-aba7-8cafbbefe7bb)
-
 ![ollamaprompts1](https://github.com/user-attachments/assets/2c126110-b54e-49ac-be65-75138fbe70a5)
+![mcp1](https://github.com/user-attachments/assets/1261756c-3755-4147-b324-b9e714c2cad3)
 
 # MITRE ATLAS focused detection development lab
 
