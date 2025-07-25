@@ -1,5 +1,5 @@
 # SPLUNK MCP / LLM SIEMulator by Rod Soto rodsoto.net
-
+# There is also a more stable Linux version here https://github.com/rsfl/splunk-mcp-llm-siemulator-linux
 # Docker based, developed under Windows 11 Host, Docker 4.42.0, Python 3.13.1
 
 # Includes (ALL LOCAL)
@@ -171,5 +171,5 @@ Due to space and computing constraints (I wanted this setup to run in a 16GB or 
 - Docker Desktop
 - Windows 10/11 or WSL2 (16 GB of RAM + GPU recommended)
 
-## NOTE 
-This is a proof of concept and it sill needs a lot of work. For some reason newer versions of ollama proved to be incredibly difficult obtaining prompt logs, so stick with the recommended version. You can also find at times that prompt logs may stop flowing and that will require restarting or troubleshooting. It would be great if all these platforms just set their logs to json format, it would make everyone's life easier. Why on windows? because of the GPU :) . I will try to migrate it to linux on the next version, and also I will try to add Garak, unfortunately it gave me too many errors when trying to join it to the lab. 
+## NOTE 07-24-2025
+Try the Linux version https://github.com/rsfl/splunk-mcp-llm-siemulator-linux is more stable and has the logger script.I will be updating the Windows version soon. 
