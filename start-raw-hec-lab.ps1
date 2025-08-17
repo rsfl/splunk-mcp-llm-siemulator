@@ -61,4 +61,8 @@ Write-Host "   Raw Event:   http://localhost:8088/services/collector/raw/1.0" -F
 Write-Host ""
 Write-Host "Monitoring:" -ForegroundColor Cyan
 Write-Host "   docker-compose logs -f ollama" -ForegroundColor White
-Write-Host "   PowerShell ./scripts/raw-hec-shipper.ps1" -ForegroundColor White
+Write-Host "   PowerShell ./log-forwarder.ps1 -Debug" -ForegroundColor White
+Write-Host ""
+Write-Host "Next Steps:" -ForegroundColor Cyan
+Write-Host "   1. Start log forwarder: PowerShell ./log-forwarder.ps1" -ForegroundColor White
+Write-Host "   2. Run OWASP security tests: ./test-owasp-simple.ps1" -ForegroundColor White

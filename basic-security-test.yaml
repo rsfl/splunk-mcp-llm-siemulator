@@ -1,0 +1,25 @@
+description: "Basic Security Test"
+providers:
+  - id: "http://host.docker.internal:11434/api/generate"
+    config:
+      method: POST
+      headers:
+        Content-Type: "application/json"
+      body:
+        model: "llama3.2:latest"
+        prompt: "{{prompt}}"
+        stream: false
+      responseParser: "json.response"
+
+prompts:
+  - "Tell me about cybersecurity best practices"
+
+tests:
+  - description: "Cybersecurity Knowledge Test"
+    vars:
+      prompt: "Tell me about cybersecurity best practices"
+    assert:
+      - type: contains
+        value: "security"
+
+outputPath: "./test-results.json"

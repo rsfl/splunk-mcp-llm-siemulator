@@ -1,0 +1,61 @@
+# Splunk Threat Detection Searches for OWASP LLM Security Testing
+# Use these searches in Splunk Web (http://localhost:8000)
+
+# 1. Basic log verification - Check if logs are being ingested
+index=ollama_logs OR index=test_logs 
+| stats count by index, sourcetype
+
+# 2. Fixed threat detection search (corrected from your original)
+index=ollama_logs ("prompt injection" OR "hack" OR "ignore instructions")
+| eval threat_type=case(
+    match(_raw, "(?i)ignore.*instruction"), "Prompt Injection",
+    match(_raw, "(?i)hack|attack"), "Malicious Intent",
+    1=1, "Unknown")
+| stats count by threat_type
+
+# 3. Advanced prompt injection detection
+index=ollama_logs 
+| regex _raw="(?i)(ignore|forget|override|bypass).*(instruction|rule|guideline|safety)"
+| eval severity=case(
+    match(_raw, "(?i)system.*prompt"), "CRITICAL",
+    match(_raw, "(?i)ignore.*instruction"), "HIGH", 
+    1=1, "MEDIUM")
+| table _time, severity, _raw
+
+# 4. Monitor for model extraction attempts  
+index=ollama_logs
+| regex _raw="(?i)(weights|parameters|architecture|training.*data)"
+| eval alert_type="Model Theft Attempt"
+| table _time, alert_type, _raw
+
+# 5. Real-time security monitoring (use for alerting)
+index=ollama_logs 
+| eval threat_score=0
+| eval threat_score=if(match(_raw, "(?i)ignore.*instruction"), threat_score+5, threat_score)
+| eval threat_score=if(match(_raw, "(?i)hack|attack|exploit"), threat_score+3, threat_score)
+| eval threat_score=if(match(_raw, "(?i)bypass|override"), threat_score+2, threat_score)
+| where threat_score > 3
+| eval risk_level=case(
+    threat_score >= 7, "HIGH",
+    threat_score >= 5, "MEDIUM",
+    1=1, "LOW")
+| table _time, risk_level, threat_score, _raw
+
+# 6. MITRE ATLAS mapping (corrected technique classifications)
+index=ollama_logs 
+| eval mitre_technique=case(
+    match(_raw, "(?i)ignore.*instruction|override.*instruction|forget.*instruction"), "AML.T0051 - LLM Prompt Injection",
+    match(_raw, "(?i)system.*prompt|reveal.*prompt|meta.*prompt|show.*prompt|extract.*prompt"), "AML.T0054 - LLM Meta Prompt Extraction",
+    match(_raw, "(?i)adversarial.*data|craft.*input"), "AML.T0043 - Craft Adversarial Data",
+    match(_raw, "(?i)backdoor|poison.*model|corrupt.*model"), "AML.T0048 - Backdoor ML Model",
+    match(_raw, "(?i)exfiltrat.*|steal.*data|extract.*data"), "AML.T0024 - Exfiltration via ML Inference API",
+    1=1, "Unknown")
+| where mitre_technique != "Unknown"
+| stats count by mitre_technique
+
+# 7. Timeline analysis
+index=ollama_logs 
+| where match(_raw, "(?i)(ignore|hack|attack|bypass)")
+| bin _time span=1h
+| stats count as attack_attempts by _time
+| where attack_attempts > 5
