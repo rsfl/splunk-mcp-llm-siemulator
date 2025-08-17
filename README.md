@@ -26,8 +26,9 @@ A Windows-based Docker environment for developing AI/LLM security detections usi
 - ✅ 16GB RAM laptop compatible
 - ✅ No cloud dependencies
 
-![ollamaprompts1](https://github.com/user-attachments/assets/2c126110-b54e-49ac-be65-75138fbe70a5)
-![mcp1](https://github.com/user-attachments/assets/1261756c-3755-4147-b324-b9e714c2cad3)
+
+<img width="1267" height="654" alt="siemwinv1" src="https://github.com/user-attachments/assets/67243347-a3c0-4c9a-b9b6-dcc81f611f30" />
+<img width="1262" height="613" alt="siemwinv1b" src="https://github.com/user-attachments/assets/3c9429cb-ed64-4310-866b-8815f48f7134" />
 
 ## 🚀 Quick Start
 
@@ -50,6 +51,7 @@ quick-start.bat
 # Validate the setup  
 .\validate-raw-hec.ps1
 ```
+<img width="1267" height="386" alt="siemwinv1c" src="https://github.com/user-attachments/assets/102fdfa7-36f2-4192-9c1f-3d168ad41c59" />
 
 ## 📊 Access Points
 
@@ -80,7 +82,8 @@ Run comprehensive security tests:
 - 🔴 **LLM07**: Insecure plugin design
 - 🔴 **LLM10**: Model theft prevention
 
-![promptfootest](https://github.com/user-attachments/assets/a603ae9b-a53c-41e6-bfe8-bb701a6e4bc0)
+<img width="1202" height="734" alt="prompfoowinv1" src="https://github.com/user-attachments/assets/3fe1a136-6c5f-433d-8088-7cff1cb37974" />
+
 
 ### Advanced Promptfoo Testing
 
@@ -116,7 +119,8 @@ tests:
         value: ["cannot", "inappropriate"]
 ```
 
-![promptfoo11](https://github.com/user-attachments/assets/1bd39123-9c52-4bb1-903a-fd905d766811)
+
+<img width="1261" height="652" alt="siemwin1prompt" src="https://github.com/user-attachments/assets/ed77549b-a28d-4511-be88-cf3d1bf708b6" />
 
 ## 🔍 MITRE ATLAS Integration
 
@@ -192,6 +196,9 @@ index=ollama_logs
 )
 | table _time, severity, _raw
 
+<img width="1274" height="304" alt="siemwinv1e" src="https://github.com/user-attachments/assets/c005a9bc-d94e-49b0-8730-bfd4020f27e9" />
+<img width="1270" height="382" alt="siemwinv1d" src="https://github.com/user-attachments/assets/fe3a5986-e8f0-49d2-bf0a-b5982083590d" />
+<img width="1267" height="386" alt="siemwinv1c" src="https://github.com/user-attachments/assets/29d08f74-45e8-4393-ad70-8b2f6c961ad8" />
 
 ## 🔧 Raw HEC Configuration & Log Shipping
 
@@ -326,7 +333,6 @@ Start-Job -ScriptBlock { .\log-forwarder.ps1 }
 3. **Develop detections**: Use Splunk validation queries
 4. **Customize parsing**: Modify `splunk-configs/props.conf`
 5. **Extend testing**: Create custom Promptfoo configurations
-
 ---
 
 **Developed by**: Rod Soto ([rodsoto.net](https://rodsoto.net))  
@@ -334,3 +340,4 @@ Start-Job -ScriptBlock { .\log-forwarder.ps1 }
 **Environment**: Docker-based, Windows 11, All Local  
 
 *For production deployments, consider the Linux version for better stability.*
+https://github.com/rsfl/splunk-mcp-llm-siemulator-linux
