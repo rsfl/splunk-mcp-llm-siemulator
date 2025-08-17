@@ -39,7 +39,7 @@ services:
     volumes:
       - ollama_models:/root/.ollama
       - ./logs:/var/log/ollama
-    command: ["/bin/bash", "-c", "mkdir -p /var/log/ollama && exec ollama serve --verbose > /var/log/ollama/ollama.log 2>&1"]
+    command: ["serve"]
 
   # -------------------- MCP  ------------------
   ollama-mcp:
@@ -62,7 +62,7 @@ services:
     logging:
       driver: splunk
       options:
-        splunk-url:  "http://host.docker.internal:8088"
+        splunk-url: "https://host.docker.internal:8088"
         splunk-token: "${SPLUNK_HEC_TOKEN}"
         splunk-format: raw
         splunk-index: mcp_logs
@@ -72,7 +72,7 @@ services:
 
   # -------------------- Promptfoo -----------------
   promptfoo:
-    image: ghcr.io/promptfoo/promptfoo:latest
+    image: ghcr.io/promptfoo/promptfoo:0.115.1
     container_name: security-range-promptfoo
     ports: ["3000:3000"]
     volumes:
@@ -94,6 +94,7 @@ services:
       - openwebui_data:/app/backend/data
     depends_on: [ollama]
     restart: unless-stopped
+
 
 # ---------- Named volumes ----------
 volumes:

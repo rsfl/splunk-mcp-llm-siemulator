@@ -171,7 +171,7 @@ function New-EnhancedDockerCompose {
     
     # Backup existing
     $composeFile = Join-Path $ScriptDir "docker-compose.yml"
-    if (Test-Path $composeFile -and !$SkipBackup) {
+    if ((Test-Path $composeFile) -and !$SkipBackup) {
         $backupFile = Join-Path $ScriptDir "docker-compose.yml.backup.$Timestamp"
         Copy-Item $composeFile $backupFile
         Write-Success "Backed up existing docker-compose.yml"
