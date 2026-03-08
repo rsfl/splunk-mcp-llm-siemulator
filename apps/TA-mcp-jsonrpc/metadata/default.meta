@@ -1,0 +1,30 @@
+# Application-level permissions default for all other objects in this app.
+# Users can read any object from this app. Power users and administrators can
+# read and write objects in this app.
+[]
+access = read : [ * ], write : [ admin, power ]
+export = system
+
+[views]
+access = read : [ * ], write : [ admin, power ]
+export = system
+
+[macros]
+access = read : [ * ], write : [ admin, power ]
+export = system
+
+[eventtypes]
+access = read : [ * ], write : [ admin, power ]
+export = system
+
+[tags]
+access = read : [ * ], write : [ admin, power ]
+export = system
+
+[props]
+access = read : [ * ], write : [ admin, power ]
+export = system
+
+[transforms]
+access = read : [ * ], write : [ admin, power ]
+export = system
