@@ -1,0 +1,30 @@
+# Metadata configuration for TA-ollama
+# Defines access controls and export settings
+
+[]
+export = system
+access = read : [ * ], write : [ admin ]
+
+[views]
+export = system
+access = read : [ * ], write : [ admin ]
+
+[macros]
+export = system
+access = read : [ * ], write : [ admin ]
+
+[eventtypes]
+export = system
+access = read : [ * ], write : [ admin ]
+
+[tags]
+export = system
+access = read : [ * ], write : [ admin ]
+
+[props]
+export = system
+access = read : [ * ], write : [ admin ]
+
+[transforms]
+export = system
+access = read : [ * ], write : [ admin ]

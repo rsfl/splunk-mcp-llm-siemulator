@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "2.0.0",
+  "info": {
+    "title": "TA-mcp-jsonrpc",
+    "id": {
+      "group": null,
+      "name": "TA-mcp-jsonrpc",
+      "version": "0.1.2"
+    },
+    "author": [
+      {
+        "name": "Rod Soto",
+        "email": "rod@rodsoto.net",
+        "company": null
+      }
+    ],
+    "releaseDate": null,
+    "description": "Technology Add-on for ingesting and analyzing Model Context Protocol (MCP) JSON-RPC messages from MCP servers. Provides field extractions, CIM compliance, and pre-built security searches for monitoring AI assistant tool usage.",
+    "classification": {
+      "intendedAudience": "IT Professionals",
+      "categories": ["Security, Fraud & Compliance", "IT Operations"],
+      "developmentStatus": "Beta"
+    },
+    "commonInformationModels": {
+      "Web": "5.3.0"
+    },
+    "license": {
+      "name": "MIT",
+      "text": "LICENSE",
+      "uri": null
+    },
+    "privacyPolicy": {
+      "name": null,
+      "text": null,
+      "uri": null
+    },
+    "releaseNotes": {
+      "name": null,
+      "text": "./README.md",
+      "uri": null
+    }
+  },
+  "dependencies": null,
+  "tasks": null,
+  "inputGroups": null,
+  "incompatibleApps": null,
+  "platformRequirements": null,
+  "supportedDeployments": ["_standalone", "_distributed", "_search_head_clustering"],
+  "targetWorkloads": ["_search_heads", "_indexers", "_forwarders"]
+}

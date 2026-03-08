@@ -110,6 +110,26 @@ maxWarmDBCount = 100
 maxMemMB = 100
 maxConcurrentOptimizes = 3
 rawChunks = true
+
+[ollama]
+homePath = `$SPLUNK_DB/ollama/db
+coldPath = `$SPLUNK_DB/ollama/colddb
+thawedPath = `$SPLUNK_DB/ollama/thaweddb
+maxDataSize = auto_high_volume
+maxHotBuckets = 15
+maxWarmDBCount = 300
+maxMemMB = 200
+rawChunks = true
+
+[mcp]
+homePath = `$SPLUNK_DB/mcp/db
+coldPath = `$SPLUNK_DB/mcp/colddb
+thawedPath = `$SPLUNK_DB/mcp/thaweddb
+maxDataSize = auto_high_volume
+maxHotBuckets = 10
+maxWarmDBCount = 300
+maxMemMB = 150
+rawChunks = true
 "@
     
     Set-Content -Path (Join-Path $ConfigDir "indexes.conf") -Value $indexesConf -Encoding UTF8
@@ -123,23 +143,21 @@ enableSSL = 0
 max_content_length = 838860800
 max_sockets = 2048
 
-[http://ollama_raw_hec]
+[http://ollama_hec]
 disabled = 0
 token = $HecToken
-index = ollama_logs
-sourcetype = ollama:raw
+index = ollama
+sourcetype = ollama:prompts
 connection_host = ip
 useACK = 0
-outputformat = raw
 
-[http://mcp_raw_hec]
+[http://mcp_hec]
 disabled = 0
 token = $HecToken
-index = mcp_logs
-sourcetype = mcp:raw
+index = mcp
+sourcetype = mcp:jsonrpc
 connection_host = ip
 useACK = 0
-outputformat = raw
 
 [http://atlas_raw_hec]
 disabled = 0
@@ -152,12 +170,12 @@ outputformat = raw
 
 [udp://514]
 connection_host = ip
-index = ollama_logs
+index = ollama
 sourcetype = syslog
 
 [splunktcp://9997]
 connection_host = ip
-index = ollama_logs
+index = ollama
 "@
     
     Set-Content -Path (Join-Path $ConfigDir "inputs.conf") -Value $inputsConf -Encoding UTF8

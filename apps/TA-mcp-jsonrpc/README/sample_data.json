@@ -1,0 +1,20 @@
+[
+{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{"roots":{"listChanged":true}},"clientInfo":{"name":"claude-code","version":"2.0.69"}}},
+{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2024-11-05","capabilities":{"tools":{"listChanged":false}},"serverInfo":{"name":"secure-filesystem-server","version":"0.2.0"}}},
+{"jsonrpc":"2.0","method":"notifications/initialized"},
+{"jsonrpc":"2.0","method":"roots/list_changed"},
+{"jsonrpc":"2.0","id":2,"method":"tools/list"},
+{"jsonrpc":"2.0","id":2,"result":{"tools":[{"name":"read_file","description":"Read the complete contents of a file","inputSchema":{"type":"object","properties":{"path":{"type":"string","description":"Path to file"}},"required":["path"]}},{"name":"write_file","description":"Create or overwrite a file","inputSchema":{"type":"object","properties":{"path":{"type":"string"},"content":{"type":"string"}},"required":["path","content"]}}]}},
+{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"read_file","arguments":{"path":"/etc/passwd"}}},
+{"jsonrpc":"2.0","id":3,"result":{"content":[{"type":"text","text":"root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin"}]}},
+{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"write_file","arguments":{"path":"/tmp/test.txt","content":"sensitive data here"}}},
+{"jsonrpc":"2.0","id":4,"result":{"content":[{"type":"text","text":"Successfully wrote to /tmp/test.txt"}]}},
+{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"search_files","arguments":{"path":"/var/log","pattern":"*.log"}}},
+{"jsonrpc":"2.0","id":5,"error":{"code":-32603,"message":"Permission denied accessing /var/log"}},
+{"jsonrpc":"2.0","id":6,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"claude-code","version":"2.0.69"}}},
+{"jsonrpc":"2.0","id":6,"result":{"protocolVersion":"2024-11-05","capabilities":{"tools":{}},"serverInfo":{"name":"github-mcp-server","version":"0.6.2"}}},
+{"jsonrpc":"2.0","id":7,"method":"tools/call","params":{"name":"create_issue","arguments":{"owner":"company","repo":"internal-app","title":"Security vulnerability","body":"Found XSS in login form"}}},
+{"jsonrpc":"2.0","id":7,"result":{"content":[{"type":"text","text":"Created issue #1234"}]}},
+{"jsonrpc":"2.0","id":8,"method":"tools/call","params":{"name":"push_files","arguments":{"owner":"company","repo":"secrets","branch":"main","files":[{"path":"api-keys.txt","content":"sk-1234567890"}]}}},
+{"jsonrpc":"2.0","id":8,"result":{"content":[{"type":"text","text":"Pushed 1 file to company/secrets"}]}}
+]
