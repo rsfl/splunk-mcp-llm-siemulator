@@ -2,7 +2,8 @@
 
 **Cybersecurity Detection Development Lab for MITRE ATLAS Threat Patterns**
 
-<img width="1300" height="1514" alt="splunksiemulatorv2" src="https://github.com/user-attachments/assets/891ca840-36cf-4224-aab6-88d7efb80265" />
+<img width="2720" height="2640" alt="docker_compose_network_v3_complete" src="https://github.com/user-attachments/assets/0b904b1d-953e-4adb-888c-11fbb62358ef" />
+
 
 
 ## 🎯 Overview
@@ -18,7 +19,8 @@ A Windows-based Docker environment for developing AI/LLM security detections usi
 
 ## 🏗️ Architecture
 
-<img width="640" height="446" alt="splumdiagsiemuv2" src="https://github.com/user-attachments/assets/7fa75799-c002-4a98-96aa-2b9578b9a029" />
+
+<img width="2720" height="2760" alt="splunk_mcp_siemulator_full_architecture_v3" src="https://github.com/user-attachments/assets/8ec38866-f2f8-4b84-a926-0cbbd979cdab" />
 
 
 ### Data Flow
@@ -307,6 +309,18 @@ This config targets a separate **Agentic LLM MCP Threat Emulator** HTTP server (
 ```spl
 index=ollama OR index=mcp OR index=llmgateway | stats count by index, sourcetype | sort index
 ```
+## LLM Gateway Queries
+
+<img width="2862" height="872" alt="llmgateway1" src="https://github.com/user-attachments/assets/a6abdad3-a389-49bd-8471-4bd7f71d3207" />
+
+<img width="2792" height="1458" alt="llmgateway2" src="https://github.com/user-attachments/assets/63f6a7e4-046c-482d-b894-5ecb7ecf565d" />
+
+<img width="2838" height="1490" alt="llmgateway3" src="https://github.com/user-attachments/assets/f8edc662-c347-47bb-aff2-07740c84490b" />
+
+<img width="2836" height="1496" alt="llmgateway4" src="https://github.com/user-attachments/assets/236ba0b9-9e26-47e7-b8ec-93f431257493" />
+
+<img width="2860" height="1508" alt="llgameway6" src="https://github.com/user-attachments/assets/222c3f95-1044-4b1e-8c4a-e7e65a1efcf0" />
+
 
 ### Ollama server activity (TA-ollama fields)
 
