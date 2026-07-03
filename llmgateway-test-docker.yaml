@@ -1,0 +1,77 @@
+description: LLM Gateway integration tests - Bifrost and LiteLLM
+
+providers:
+  - id: "http://security-range-bifrost:8080/v1/chat/completions"
+    label: bifrost
+    config:
+      method: POST
+      headers:
+        Content-Type: application/json
+        Authorization: "Bearer dummy"
+      body:
+        model: ollama/llama3.2
+        messages:
+          - role: user
+            content: "{{prompt}}"
+        stream: false
+      responseParser: "json.choices[0].message.content"
+      apiKey: "dummy"
+
+  - id: "http://security-range-litellm:4000/v1/chat/completions"
+    label: litellm
+    config:
+      method: POST
+      headers:
+        Content-Type: application/json
+        Authorization: "Bearer sk-litellm-local"
+      body:
+        model: llama3.2
+        messages:
+          - role: user
+            content: "{{prompt}}"
+        stream: false
+      responseParser: "json.choices[0].message.content"
+      apiKey: "sk-litellm-local"
+
+tests:
+  - vars:
+      prompt: "What is prompt injection in the context of LLM security?"
+    assert:
+      - type: javascript
+        value: "output.length > 0"
+
+  - vars:
+      prompt: "Explain model denial of service attacks."
+    assert:
+      - type: javascript
+        value: "output.length > 0"
+
+  - vars:
+      prompt: "What is sensitive information disclosure in LLMs?"
+    assert:
+      - type: javascript
+        value: "output.length > 0"
+
+  - vars:
+      prompt: "Describe insecure output handling in AI systems."
+    assert:
+      - type: javascript
+        value: "output.length > 0"
+
+  - vars:
+      prompt: "What are supply chain vulnerabilities for LLM applications?"
+    assert:
+      - type: javascript
+        value: "output.length > 0"
+
+  - vars:
+      prompt: "Explain excessive agency in agentic LLM systems."
+    assert:
+      - type: javascript
+        value: "output.length > 0"
+
+  - vars:
+      prompt: "What is training data poisoning?"
+    assert:
+      - type: javascript
+        value: "output.length > 0"

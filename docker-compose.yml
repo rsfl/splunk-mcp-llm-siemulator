@@ -1,7 +1,7 @@
 services:
   # -------------------- Splunk --------------------
   splunk:
-    image: splunk/splunk:9.1.3               # ← pinned to last good build
+    image: splunk/splunk:9.4.13              # ← pinned to last good build
     container_name: security-range-splunk
     hostname: security-range-splunk
     environment:
@@ -9,9 +9,12 @@ services:
       SPLUNK_PASSWORD: Password1             # change after first login
       SPLUNK_HEC_TOKEN: ${SPLUNK_HEC_TOKEN}  # pre-creates token
       SPLUNK_HEC_ENABLE: "true"
+      SPLUNK_HEC_SSL: "false"
+      SPLUNK_APPS_URL: /tmp/apps/ta-llmgateway_036.tgz
     ports:
       - "8000:8000"
       - "8088:8088"
+      - "8089:8089"                          # management port (REST API)
       - "514:514/udp"                        # syslog UDP port
     volumes:
       - splunk_var:/opt/splunk/var
@@ -19,8 +22,12 @@ services:
       # TA apps — bind-mount into apps directory so Splunk loads them on start
       - ./apps/TA-ollama-releasev1:/opt/splunk/etc/apps/TA-ollama-releasev1
       - ./apps/TA-mcp-jsonrpc:/opt/splunk/etc/apps/TA-mcp-jsonrpc
+      # TA-llmgateway installed via SPLUNK_APPS_URL on first start
+      - ./ta-llmgateway_036.tgz:/tmp/apps/ta-llmgateway_036.tgz
       # Shared log directory — read-only, TAs monitor these files
       - ./logs:/var/log/docker-apps:ro
+      # Bifrost data dir — read-only, available for TA modular input if enabled
+      - ./bifrost:/mnt/bifrost:ro
 
   # -------------------- Ollama --------------------
   ollama:
@@ -69,6 +76,74 @@ services:
     volumes:
       - ./logs:/var/log
     ports: ["3456:3456"]
+
+  # -------------------- Bifrost LLM Gateway --------------------
+  bifrost:
+    image: maximhq/bifrost:latest
+    container_name: security-range-bifrost
+    hostname: bifrost-gateway
+    depends_on:
+      ollama:
+        condition: service_started
+    volumes:
+      - ./bifrost:/app/data
+    ports: ["8090:8080"]
+    restart: unless-stopped
+
+  # -------------------- LiteLLM Gateway --------------------
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    container_name: security-range-litellm
+    hostname: litellm-gateway
+    depends_on:
+      ollama:
+        condition: service_started
+    environment:
+      LITELLM_MASTER_KEY: sk-litellm-local
+    volumes:
+      - ./litellm/config.yaml:/app/config.yaml:ro
+      - ./litellm/custom_callbacks.py:/app/custom_callbacks.py:ro
+    command: ["--config", "/app/config.yaml", "--host", "0.0.0.0", "--port", "4000"]
+    working_dir: /app
+    ports: ["4001:4000"]
+    restart: unless-stopped
+
+  # ---- Bifrost keepalive — keeps UI 1h window populated ----
+  bifrost-keepalive:
+    image: python:3.12-alpine
+    container_name: security-range-bifrost-keepalive
+    depends_on:
+      bifrost:
+        condition: service_started
+      ollama:
+        condition: service_started
+    environment:
+      BIFROST_URL: http://security-range-bifrost:8080/v1/chat/completions
+      KEEPALIVE_INTERVAL: "1200"
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - ./bifrost/keepalive.py:/app/keepalive.py:ro
+    command: ["python3", "/app/keepalive.py"]
+    restart: unless-stopped
+
+  # ---- Bifrost -> Splunk HEC sidecar ----
+  bifrost-hec-shipper:
+    image: python:3.12-alpine
+    container_name: security-range-bifrost-shipper
+    depends_on:
+      bifrost:
+        condition: service_started
+    environment:
+      SPLUNK_HEC_URL: http://security-range-splunk:8088/services/collector/event
+      SPLUNK_HEC_TOKEN: ${SPLUNK_HEC_TOKEN}
+      BIFROST_DB_PATH: /app/data/logs.db
+      SHIP_INTERVAL: "30"
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - ./bifrost:/app/data:ro
+      - ./bifrost/hec_shipper.py:/app/hec_shipper.py:ro
+    command: ["python3", "/app/hec_shipper.py"]
+    restart: unless-stopped
 
   # -------------------- Promptfoo -----------------
   promptfoo:

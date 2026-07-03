@@ -12,9 +12,11 @@ param(
 )
 
 # SSL bypass for self-signed cert
-add-type @"
+if (-not ([System.Management.Automation.PSTypeName]'TrustAllCertsPolicy').Type) {
+    Add-Type @"
     using System.Net;
-    using System.Security.Certificates;
+    using System.Net.Security;
+    using System.Security.Cryptography.X509Certificates;
     public class TrustAllCertsPolicy : ICertificatePolicy {
         public bool CheckValidationResult(
             ServicePoint srvPoint, X509Certificate certificate,
@@ -23,6 +25,7 @@ add-type @"
         }
     }
 "@
+}
 [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
 
@@ -65,8 +68,7 @@ Write-Host "   Splunk is ready." -ForegroundColor Green
 # 2. Verify TAs are mounted
 Write-Host ""
 Write-Host "2. Verifying TA mounts in container..." -ForegroundColor Blue
-$taOllama = docker exec $SplunkContainer test -d /opt/splunk/etc/apps/TA-ollama-releasev1 2>&1
-$taMcp    = docker exec $SplunkContainer test -d /opt/splunk/etc/apps/TA-mcp-jsonrpc 2>&1
+docker exec $SplunkContainer test -d /opt/splunk/etc/apps/TA-ollama-releasev1 2>&1 | Out-Null
 if ($LASTEXITCODE -eq 0) {
     Write-Host "   TA-ollama-releasev1: mounted" -ForegroundColor Green
 } else {
@@ -78,14 +80,21 @@ if ($LASTEXITCODE -eq 0) {
 } else {
     Write-Host "   TA-mcp-jsonrpc:      NOT FOUND - check docker-compose.yml volume mounts" -ForegroundColor Red
 }
+docker exec $SplunkContainer test -d /opt/splunk/etc/apps/TA-llmgateway 2>&1 | Out-Null
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "   TA-llmgateway:       installed via SPLUNK_APPS_URL" -ForegroundColor Green
+} else {
+    Write-Host "   TA-llmgateway:       NOT FOUND - check ta-llmgateway_036.tgz mount and SPLUNK_APPS_URL" -ForegroundColor Red
+}
 
 # 3. Create indexes via REST API
 Write-Host ""
 Write-Host "3. Creating indexes via REST API..." -ForegroundColor Blue
 
 $indexes = @(
-    @{ name = "ollama";     maxHotBuckets = "15"; maxMemMB = "200" },
-    @{ name = "mcp";        maxHotBuckets = "10"; maxMemMB = "150" }
+    @{ name = "ollama";      maxHotBuckets = "15"; maxMemMB = "200" },
+    @{ name = "mcp";         maxHotBuckets = "10"; maxMemMB = "150" },
+    @{ name = "llmgateway";  maxHotBuckets = "10"; maxMemMB = "150" }
 )
 
 foreach ($idx in $indexes) {
@@ -133,14 +142,24 @@ if ($apps) {
     } else {
         Write-Host "   TA-mcp-jsonrpc: not found in Splunk apps (check mount and restart)" -ForegroundColor Yellow
     }
+    if ("TA-llmgateway" -in $appNames) {
+        Write-Host "   TA-llmgateway:  loaded" -ForegroundColor Green
+    } else {
+        Write-Host "   TA-llmgateway:  not found in Splunk apps (check SPLUNK_APPS_URL and restart)" -ForegroundColor Yellow
+    }
 }
 
 Write-Host ""
 Write-Host "=== TA installation complete ===" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Indexes created:" -ForegroundColor White
-Write-Host "  index=ollama  <- TA-ollama monitors ./logs/ollama.log (sourcetype=ollama:server)" -ForegroundColor White
-Write-Host "  index=mcp     <- TA-mcp monitors ./logs/mcp.log (sourcetype=mcp:jsonrpc)" -ForegroundColor White
+Write-Host "  index=ollama      <- TA-ollama monitors ./logs/ollama.log (sourcetype=ollama:server)" -ForegroundColor White
+Write-Host "  index=mcp         <- TA-mcp monitors ./logs/mcp.log (sourcetype=mcp:jsonrpc)" -ForegroundColor White
+Write-Host "  index=llmgateway  <- TA-llmgateway receives HEC events from Bifrost and LiteLLM" -ForegroundColor White
 Write-Host ""
 Write-Host "Splunk search to verify ingestion:" -ForegroundColor Yellow
-Write-Host "  index=ollama OR index=mcp | stats count by index, sourcetype" -ForegroundColor White
+Write-Host "  index=ollama OR index=mcp OR index=llmgateway | stats count by index, sourcetype" -ForegroundColor White
+Write-Host ""
+Write-Host "LLM Gateway endpoints:" -ForegroundColor White
+Write-Host "  Bifrost:  http://localhost:8090/v1/chat/completions  (model: ollama/llama3.2)" -ForegroundColor White
+Write-Host "  LiteLLM:  http://localhost:4001/v1/chat/completions  (model: llama3.2)" -ForegroundColor White

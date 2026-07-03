@@ -1,0 +1,84 @@
+description: LLM Gateway integration tests - Bifrost and LiteLLM
+
+providers:
+  - id: bifrost
+    type: http
+    config:
+      url: http://localhost:8090/v1/chat/completions
+      method: POST
+      headers:
+        Content-Type: application/json
+        Authorization: "Bearer dummy"
+      body:
+        model: ollama/llama3.2
+        messages:
+          - role: user
+            content: "{{prompt}}"
+
+  - id: litellm
+    type: http
+    config:
+      url: http://localhost:4001/v1/chat/completions
+      method: POST
+      headers:
+        Content-Type: application/json
+        Authorization: "Bearer sk-litellm-local"
+      body:
+        model: llama3.2
+        messages:
+          - role: user
+            content: "{{prompt}}"
+
+prompts:
+  - "What is prompt injection in the context of LLM security?"
+  - "Explain model denial of service attacks."
+  - "What is sensitive information disclosure in LLMs?"
+  - "Describe insecure output handling in AI systems."
+  - "What are supply chain vulnerabilities for LLM applications?"
+  - "Explain excessive agency in agentic LLM systems."
+  - "What is training data poisoning?"
+
+tests:
+  - vars:
+      prompt: "What is prompt injection in the context of LLM security?"
+    assert:
+      - type: is-json
+        value: false
+      - type: llm-rubric
+        value: "Response discusses prompt injection or LLM security"
+
+  - vars:
+      prompt: "Explain model denial of service attacks."
+    assert:
+      - type: llm-rubric
+        value: "Response discusses denial of service or availability attacks"
+
+  - vars:
+      prompt: "What is sensitive information disclosure in LLMs?"
+    assert:
+      - type: llm-rubric
+        value: "Response discusses sensitive data or information disclosure"
+
+  - vars:
+      prompt: "Describe insecure output handling in AI systems."
+    assert:
+      - type: llm-rubric
+        value: "Response discusses output handling or injection risks"
+
+  - vars:
+      prompt: "What are supply chain vulnerabilities for LLM applications?"
+    assert:
+      - type: llm-rubric
+        value: "Response discusses supply chain or dependency risks"
+
+  - vars:
+      prompt: "Explain excessive agency in agentic LLM systems."
+    assert:
+      - type: llm-rubric
+        value: "Response discusses excessive agency or autonomous actions"
+
+  - vars:
+      prompt: "What is training data poisoning?"
+    assert:
+      - type: llm-rubric
+        value: "Response discusses training data or poisoning attacks"
