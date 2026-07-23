@@ -69,7 +69,7 @@ docker ps
 ```
 
 This script:
-- Verifies TA-ollama-releasev1, TA-mcp-jsonrpc, and TA-llmgateway are mounted in Splunk (TA-llmgateway installs automatically via `SPLUNK_APPS_URL` pointing at `ta-llmgateway_036.tgz`)
+- Verifies TA-ollama-releasev1, TA-mcp-jsonrpc, and TA-llmgateway are mounted in Splunk (TA-llmgateway installs automatically via `SPLUNK_APPS_URL` pointing at `ta-llmgateway_037.tgz`)
 - Creates `ollama`, `mcp`, `llmgateway` indexes via REST API
 - Restarts Splunk to load the TAs
 
@@ -167,7 +167,7 @@ v2 replaced ad-hoc HEC log shipping with proper Splunk TAs for both data sources
 - **Local override** (`apps/TA-mcp-jsonrpc/local/inputs.conf`):
   - Monitors `/var/log/docker-apps/mcp.log` → `index=mcp`
 
-### TA-llmgateway (`ta-llmgateway_036.tgz`) — v3
+### TA-llmgateway (`ta-llmgateway_037.tgz`) — v3
 
 - **Sourcetypes**: `llmgateway:bifrost`, `llmgateway:litellm`
 - **Indexed extractions**: JSON (`INDEXED_EXTRACTIONS = json`) with `FIELDALIAS`/`EVAL` normalization into a common `llmgateway_*` field namespace across both gateways (model, provider, tokens, latency, cost, tool calls, retries, routing)
@@ -492,7 +492,7 @@ docker-compose up -d
 | `install-tas.ps1` | Creates indexes (incl. `llmgateway` as of v3), verifies TA mounts, restarts Splunk |
 | `seed-mcp-index.ps1` | **v2** — Seeds `index=mcp` with 12 realistic MCP JSON-RPC events |
 | `owasp-llm-test.yaml` | **v2** — Fixed Promptfoo OWASP LLM Top 10 test config (direct Ollama) |
-| `ta-llmgateway_036.tgz` | **v3** — TA package for `index=llmgateway`, auto-installed via `SPLUNK_APPS_URL` |
+| `ta-llmgateway_037.tgz` | **v3** — TA package for `index=llmgateway`, auto-installed via `SPLUNK_APPS_URL` |
 | `bifrost/config.json` | **v3** — Bifrost provider config (points at Ollama, SQLite log store) |
 | `bifrost/hec_shipper.py` | **v3** — Sidecar: polls Bifrost's SQLite log every 30s, ships new rows to Splunk HEC |
 | `bifrost/keepalive.py` | **v3** — Sidecar: heartbeat request every 20 min so Bifrost's UI shows recent activity |
@@ -549,7 +549,7 @@ docker-compose up -d
 | LLM Model | llama3.2:latest (3.2B Q4_K_M) | ~2GB download; shared by direct calls, Bifrost, and LiteLLM |
 | TA-ollama | 0.1.5 | CIM 5.0+ Web datamodel |
 | TA-mcp | 0.1.2 | MCP JSON-RPC parsing |
-| TA-llmgateway | 0.3.6 | **v3** — `llmgateway:bifrost` / `llmgateway:litellm` sourcetypes |
+| TA-llmgateway | 0.3.7 | **v3** — `llmgateway:bifrost` / `llmgateway:litellm` sourcetypes |
 | Bifrost | latest (maximhq/bifrost) | **v3** — LLM gateway/proxy |
 | LiteLLM | main-latest (ghcr.io/berriai/litellm) | **v3** — LLM gateway/proxy |
 | Promptfoo | 0.120.27 (latest) | Updated from 0.115.1 |

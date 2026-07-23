@@ -10,7 +10,7 @@ services:
       SPLUNK_HEC_TOKEN: ${SPLUNK_HEC_TOKEN}  # pre-creates token
       SPLUNK_HEC_ENABLE: "true"
       SPLUNK_HEC_SSL: "false"
-      SPLUNK_APPS_URL: /tmp/apps/ta-llmgateway_036.tgz
+      SPLUNK_APPS_URL: /tmp/apps/ta-llmgateway_037.tgz
     ports:
       - "8000:8000"
       - "8088:8088"
@@ -23,7 +23,7 @@ services:
       - ./apps/TA-ollama-releasev1:/opt/splunk/etc/apps/TA-ollama-releasev1
       - ./apps/TA-mcp-jsonrpc:/opt/splunk/etc/apps/TA-mcp-jsonrpc
       # TA-llmgateway installed via SPLUNK_APPS_URL on first start
-      - ./ta-llmgateway_036.tgz:/tmp/apps/ta-llmgateway_036.tgz
+      - ./ta-llmgateway_037.tgz:/tmp/apps/ta-llmgateway_037.tgz
       # Shared log directory — read-only, TAs monitor these files
       - ./logs:/var/log/docker-apps:ro
       # Bifrost data dir — read-only, available for TA modular input if enabled
@@ -98,6 +98,8 @@ services:
     depends_on:
       ollama:
         condition: service_started
+    env_file:
+      - secrets.env
     environment:
       LITELLM_MASTER_KEY: sk-litellm-local
     volumes:
