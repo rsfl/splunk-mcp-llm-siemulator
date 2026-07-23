@@ -65,6 +65,22 @@ def flatten(row):
             if m.get("tool_calls") and row["tool_calls"] is None:
                 row["tool_calls"] = m["tool_calls"]
 
+    # Non-streaming chat completions land in output_message (single object),
+    # not output_history (which Bifrost only populates for multi-turn/streamed
+    # responses) -- fall back to it so output_text isn't silently empty.
+    om = row.pop("output_message", None)
+    if om and not row["output_text"]:
+        if isinstance(om, str):
+            try:
+                om = json.loads(om)
+            except Exception:
+                om = None
+        if isinstance(om, dict):
+            if om.get("content"):
+                row["output_text"] = str(om["content"])
+            if om.get("tool_calls") and row["tool_calls"] is None:
+                row["tool_calls"] = om["tool_calls"]
+
     sk = row.pop("selected_key", None)
     if isinstance(sk, dict):
         row["selected_key_name"] = sk.get("name", "")

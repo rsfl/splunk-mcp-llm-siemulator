@@ -84,7 +84,7 @@ docker exec $SplunkContainer test -d /opt/splunk/etc/apps/TA-llmgateway 2>&1 | O
 if ($LASTEXITCODE -eq 0) {
     Write-Host "   TA-llmgateway:       installed via SPLUNK_APPS_URL" -ForegroundColor Green
 } else {
-    Write-Host "   TA-llmgateway:       NOT FOUND - check ta-llmgateway_036.tgz mount and SPLUNK_APPS_URL" -ForegroundColor Red
+    Write-Host "   TA-llmgateway:       NOT FOUND - check ta-llmgateway_037.tgz mount and SPLUNK_APPS_URL" -ForegroundColor Red
 }
 
 # 3. Create indexes via REST API
